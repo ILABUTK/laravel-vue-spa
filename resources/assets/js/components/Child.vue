@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <transition name="page" mode="out-in">
-      <slot>
-        <router-view></router-view>
-      </slot>
-    </transition>
-  </div>
+  <transition name="page" mode="out-in">
+    <slot>
+      <router-view/>
+    </slot>
+  </transition>
 </template>
 
 <script>
 export default {
-  name: 'child'
+  name: 'Child'
 }
 </script>

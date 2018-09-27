@@ -1,16 +1,14 @@
 <template>
-  <div class="progress" :style="{
+  <div :style="{
     width: `${percent}%`,
     height: height,
     opacity: show ? 1 : 0,
     'background-color': canSuccess ? color : failedColor
-  }"></div>
+  }" class="progress"/>
 </template>
 
 <script>
 // https://github.com/nuxt/nuxt.js/blob/master/lib/app/components/nuxt-loading.vue
-import Vue from 'vue'
-
 export default {
   data: () => ({
     percent: 0,
@@ -70,7 +68,7 @@ export default {
       this._timer = null
       setTimeout(() => {
         this.show = false
-        Vue.nextTick(() => {
+        this.$nextTick(() => {
           setTimeout(() => {
             this.percent = 0
           }, 200)

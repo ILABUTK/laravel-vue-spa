@@ -1,52 +1,47 @@
 <template>
   <div class="row">
-    <div class="col-md-8 offset-md-2">
-      <div class="card">
-        <div class="card-header">Reset Password</div>
-        <div class="card-block">
-          <form @submit.prevent="reset" @keydown="form.errors.clear($event.target.name)">
-            <div v-if="status" class="alert alert-success">
-              {{ status }}
-            </div>
+    <div class="col-lg-8 m-auto">
+      <card :title="$t('reset_password')">
+        <form @submit.prevent="reset" @keydown="form.onKeydown($event)">
+          <alert-success :form="form" :message="status"/>
 
-            <!-- Email -->
-            <div class="form-group row" :class="{ 'has-danger': form.errors.has('email') }">
-              <label for="email" class="col-sm-3 col-form-label text-sm-right">Email</label>
-              <div class="col-sm-7">
-                <input v-model="form.email" type="text" name="email" id="email" class="form-control">
-                <has-error :form="form" field="email"></has-error>
-              </div>
+          <!-- Email -->
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-right">{{ $t('email') }}</label>
+            <div class="col-md-7">
+              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email" readonly>
+              <has-error :form="form" field="email"/>
             </div>
+          </div>
 
-            <!-- Password -->
-            <div class="form-group row" :class="{ 'has-danger': form.errors.has('password') }">
-              <label for="password" class="col-sm-3 col-form-label text-sm-right">Password</label>
-              <div class="col-sm-7">
-                <input v-model="form.password" type="password" name="password" id="password" class="form-control">
-                <has-error :form="form" field="password"></has-error>
-              </div>
+          <!-- Password -->
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-right">{{ $t('password') }}</label>
+            <div class="col-md-7">
+              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
+              <has-error :form="form" field="password"/>
             </div>
+          </div>
 
-            <!-- Password Confirmation -->
-            <div class="form-group row">
-              <label for="password_confirmation" class="col-sm-3 col-form-label text-sm-right">Confirm Password</label>
-              <div class="col-sm-7">
-                <input v-model="form.password_confirmation" type="password" name="password_confirmation" id="password_confirmation" class="form-control">
-              </div>
+          <!-- Password Confirmation -->
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-right">{{ $t('confirm_password') }}</label>
+            <div class="col-md-7">
+              <input v-model="form.password_confirmation" :class="{ 'is-invalid': form.errors.has('password_confirmation') }" class="form-control" type="password" name="password_confirmation">
+              <has-error :form="form" field="password_confirmation"/>
             </div>
+          </div>
 
-            <!-- Submit Button -->
-            <div class="form-group row">
-              <div class="col-sm-9 offset-sm-3">
-                <button :disabled="form.busy" type="submit" class="btn btn-primary">
-                  <icon v-if="form.busy" name="spinner"></icon>
-                  Reset Password
-                </button>
-              </div>
+          <!-- Submit Button -->
+          <div class="form-group row">
+            <div class="col-md-9 ml-md-auto">
+              <v-button :loading="form.busy">
+                {{ $t('reset_password') }}
+              </v-button>
             </div>
-          </form>
-        </div>
-      </div>
+          </div>
+        </form>
+      </card>
     </div>
   </div>
 </template>
@@ -55,10 +50,14 @@
 import Form from 'vform'
 
 export default {
-  metaInfo: { titleTemplate: 'Reset Password | %s' },
+  middleware: 'guest',
+
+  metaInfo () {
+    return { title: this.$t('reset_password') }
+  },
 
   data: () => ({
-    status: null,
+    status: '',
     form: new Form({
       token: '',
       email: '',
@@ -67,15 +66,18 @@ export default {
     })
   }),
 
-  methods: {
-    reset () {
-      this.form.token = this.$route.params.token
+  created () {
+    this.form.email = this.$route.query.email
+    this.form.token = this.$route.params.token
+  },
 
-      this.form.post('/api/password/reset')
-        .then(({ data: { status }}) => {
-          this.form.reset()
-          this.status = status
-        })
+  methods: {
+    async reset () {
+      const { data } = await this.form.post('/api/password/reset')
+
+      this.status = data.status
+
+      this.form.reset()
     }
   }
 }

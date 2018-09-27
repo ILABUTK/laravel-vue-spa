@@ -1,28 +1,32 @@
-# Laravel-Vue SPA Starter [WIP]
+# Laravel-Vue SPA 
+
+<a href="https://travis-ci.org/cretueusebiu/laravel-vue-spa"><img src="https://travis-ci.org/cretueusebiu/laravel-vue-spa.svg?branch=master" alt="Build Status"></a>
+<a href="https://packagist.org/packages/cretueusebiu/laravel-vue-spa"><img src="https://poser.pugx.org/cretueusebiu/laravel-vue-spa/d/total.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/cretueusebiu/laravel-vue-spa"><img src="https://poser.pugx.org/cretueusebiu/laravel-vue-spa/v/stable.svg" alt="Latest Stable Version"></a>
 
 > A Laravel-Vue SPA starter project template.
 
+<p align="center">
+<img src="https://i.imgur.com/NHFTsGt.png">
+</p>
+
 ## Features
 
-- Laravel 5.4 + Vue + Vue Router + Vuex
-- Pages with custom layouts 
-- Examples for login, register and password reset
-- Integration with [vform](https://github.com/cretueusebiu/vform)
-- Authentication with [JWT](https://github.com/tymondesigns/jwt-auth)
-- Webpack with [laravel-mix](https://github.com/JeffreyWay/laravel-mix)
-- SVG icons with [svg-sprite-loader](https://github.com/kisenka/svg-sprite-loader)
+- Laravel 5.6 
+- Vue + VueRouter + Vuex + VueI18n + ESlint
+- Pages with dynamic import and custom layouts
+- Login, register and password reset
+- Authentication with JWT
+- Socialite integration
+- Bootstrap 4 + Font Awesome 5
 
 ## Installation
 
-- `git clone https://github.com/cretueusebiu/laravel-vue-spa.git`
-- `cd laravel-vue-spa`
-- `cp .env.example .env`
-- `composer install`
-- `php artisan key:generate`
-- `php artisan jwt:secret`
+- `composer create-project --prefer-dist cretueusebiu/laravel-vue-spa`
 - Edit `.env` and set your database connection details
+- (When installed via git clone or download, run `php artisan key:generate` and `php artisan jwt:secret`)
 - `php artisan migrate`
-- `npm install` / `yarn`
+- `yarn` (Install [Yarn](https://yarnpkg.com/en/docs/install) if you don't have it.)
 
 ## Usage
 
@@ -41,3 +45,7 @@ npm run hot
 ```bash
 npm run production
 ```
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.

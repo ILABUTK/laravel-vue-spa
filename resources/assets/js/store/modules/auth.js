@@ -1,16 +1,22 @@
-import api from '../../api'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import * as types from '../mutation-types'
 
-// initial state
-const state = {
+// state
+export const state = {
   user: null,
   token: Cookies.get('token')
 }
 
+// getters
+export const getters = {
+  user: state => state.user,
+  token: state => state.token,
+  check: state => state.user !== null
+}
+
 // mutations
-const mutations = {
+export const mutations = {
   [types.SAVE_TOKEN] (state, { token, remember }) {
     state.token = token
     Cookies.set('token', token, { expires: remember ? 365 : null })
@@ -38,52 +44,36 @@ const mutations = {
 }
 
 // actions
-const actions = {
+export const actions = {
   saveToken ({ commit, dispatch }, payload) {
     commit(types.SAVE_TOKEN, payload)
   },
 
-  fetchUser ({ commit }) {
-    return new Promise(async (resolve, reject) => {
-      const user = await api.fetchUser()
+  async fetchUser ({ commit }) {
+    try {
+      const { data } = await axios.get('/api/user')
 
-      if (user) {
-        commit(types.FETCH_USER_SUCCESS, { user })
-        resolve(user)
-      } else {
-        commit(types.FETCH_USER_FAILURE)
-        reject()
-      }
-    })
+      commit(types.FETCH_USER_SUCCESS, { user: data })
+    } catch (e) {
+      commit(types.FETCH_USER_FAILURE)
+    }
   },
 
   updateUser ({ commit }, payload) {
     commit(types.UPDATE_USER, payload)
   },
 
-  logout ({ commit }) {
-    return new Promise((resolve, reject) => {
-      axios.post('/api/logout')
-        .then(() => {
-          commit(types.LOGOUT)
+  async logout ({ commit }) {
+    try {
+      await axios.post('/api/logout')
+    } catch (e) { }
 
-          resolve()
-        })
-        .catch(reject)
-    })
+    commit(types.LOGOUT)
+  },
+
+  async fetchOauthUrl (ctx, { provider }) {
+    const { data } = await axios.post(`/api/oauth/${provider}`)
+
+    return data.url
   }
-}
-
-// getters
-const getters = {
-  authUser: state => state.user,
-  authToken: state => state.token,
-  authCheck: state => state.user !== null
-}
-
-export default {
-  state,
-  mutations,
-  actions,
-  getters
 }

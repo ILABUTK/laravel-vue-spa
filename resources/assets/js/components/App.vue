@@ -1,41 +1,47 @@
 <template>
   <div id="app">
-    <loading ref="loading"></loading>
+    <loading ref="loading"/>
 
     <transition name="page" mode="out-in">
-      <component v-if="layout" :is="layout"></component>
+      <component v-if="layout" :is="layout"/>
     </transition>
   </div>
 </template>
 
 <script>
-const layouts = {}
-const requireContext = require.context('../layouts', false, /.*\.vue$/)
+import Loading from './Loading'
 
-requireContext.keys().forEach(file => {
-  const name = file.replace(/(^.\/)|(\.vue$)/g, '')
+// Load layout components dynamically.
+const requireContext = require.context('~/layouts', false, /.*\.vue$/)
 
-  layouts[name] = requireContext(file)
-})
+const layouts = requireContext.keys()
+  .map(file =>
+    [file.replace(/(^.\/)|(\.vue$)/g, ''), requireContext(file)]
+  )
+  .reduce((components, [name, component]) => {
+    components[name] = component.default || component
+    return components
+  }, {})
 
 export default {
-  name: 'App',
+  el: '#app',
 
   components: {
-    Loading: require('./Loading.vue')
-  },
-
-  metaInfo: {
-    title: 'Laravel'
+    Loading
   },
 
   data: () => ({
     layout: null,
-    defaultLayout: 'app'
+    defaultLayout: 'default'
   }),
 
-  created () {
-    this.$root.$loading = this
+  metaInfo () {
+    const { appName } = window.config
+
+    return {
+      title: appName,
+      titleTemplate: `%s · ${appName}`
+    }
   },
 
   mounted () {

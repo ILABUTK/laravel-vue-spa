@@ -1,19 +1,18 @@
 import Vue from 'vue'
-import './bootstrap'
-import { sync } from 'vuex-router-sync'
+import store from '~/store'
+import router from '~/router'
+import i18n from '~/plugins/i18n'
+import App from '~/components/App'
 
-import store from './store'
-import routes from './routes'
-import App from './components/App.vue'
-import makeRouter from './utils/router'
+import '~/plugins'
+import '~/components'
 
-const router = makeRouter(routes)
+Vue.config.productionTip = false
 
-sync(store, router)
-
+/* eslint-disable no-new */
 new Vue({
+  i18n,
   store,
   router,
-  ...App,
-  el: '#app'
+  ...App
 })
